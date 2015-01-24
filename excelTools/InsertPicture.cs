@@ -34,8 +34,8 @@ namespace ExcelTools
                 Core.MsoTriState.msoTrue,  /* false:保存しない,true:保存する */
                 rangeLeft, rangeTop, (float)0.0, (float)0.0); //位置だけ指定し、サイズは以下プロパティで再設定する
 
-            shape.ScaleWidth(1.0 /* 拡大比率 */, Core.MsoTriState.msoTrue); //一端、実サイズで展開
-            shape.ScaleHeight(1.0 /* 拡大比率 */, Core.MsoTriState.msoTrue); //一端、実サイズで展開
+            shape.ScaleWidth((float)1.0 /* 拡大比率 */, Core.MsoTriState.msoTrue); //一端、実サイズで展開
+            shape.ScaleHeight((float)1.0 /* 拡大比率 */, Core.MsoTriState.msoTrue); //一端、実サイズで展開
 
             var picWidth = shape.Width;//画像の幅
             var picHeight = shape.Height;//画像の高さ
