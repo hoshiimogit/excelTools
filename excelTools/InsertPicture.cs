@@ -1,0 +1,83 @@
+﻿using System;
+using Excel = Microsoft.Office.Interop.Excel;
+using Core = Microsoft.Office.Core;
+
+namespace ExcelTools
+{
+    class ExcelTools
+    {
+        /// <summary>
+        /// 指定したexcelシートのrangeに指定した画像を縦横比を維持したまま中央かつ最大サイズで貼り付ける
+        /// Insert Picture in Excel Automatically Sized to Fit Cells
+        /// </summary>
+        /// <param name="excelPath">excelファイルのパス</param>
+        /// <param name="sheetName">シート名</param>
+        /// <param name="topCell">貼り付ける場所（左上セル）</param>
+        /// <param name="bottomCell">貼り付ける場所（右下セル）</param>
+        /// <param name="picPath">画像ファイルのパス</param>
+        public static void InsertPicture(string excelPath, string sheetName, string topCell, string bottomCell, string picPath)
+        {
+            var excelApp = new Excel.Application();
+
+            excelApp.Visible = true; //for debug 画面表示したくなければfalse。
+            excelApp.DisplayAlerts = false;
+
+            var wkbooks = excelApp.Workbooks;
+            var wkbook = (Excel.Workbook)wkbooks.Open(excelPath,
+                Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing,
+                Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+
+            var sheets = wkbook.Worksheets;
+            var wksheet = (Excel.Worksheet)sheets[sheetName];
+            var range = wksheet.get_Range(topCell, bottomCell);
+            range.Select();
+
+            var rangeLeft = float.Parse(range.Left.ToString()); //セルのx座標
+            var rangeTop = float.Parse(range.Top.ToString()); //セルのy座標
+            var rangeWidth = float.Parse(range.Width.ToString()); //セルの幅
+            var rangeHeight = float.Parse(range.Height.ToString()); //セルの高さ
+
+            var shapes = wksheet.Shapes;
+
+            var shape = shapes.AddPicture(picPath,
+                Core.MsoTriState.msoFalse, /* false:埋め込む,true:リンクする */
+                Core.MsoTriState.msoTrue,  /* false:保存しない,true:保存する */
+                rangeLeft, rangeTop, (float)0.0, (float)0.0); //位置だけ指定し、サイズは以下プロパティで再設定する
+
+            shape.ScaleWidth(1.0 /* 拡大比率 */, Core.MsoTriState.msoTrue); //一端、実サイズで展開
+            shape.ScaleHeight(1.0 /* 拡大比率 */, Core.MsoTriState.msoTrue); //一端、実サイズで展開
+
+            var picWidth = shape.Width;//画像幅
+            var picHeight = shape.Height;//画像高
+            var picRatio = picWidth / picHeight; //画像の横長比
+            var rangeRatio = rangeWidth / rangeHeight; //セルの横長比
+
+            if (rangeRatio > picRatio)
+            {
+                //セルの方が横長比が大きい場合 
+                shape.Height = rangeHeight;// 画像の高さ＝セルの高さ
+                shape.Width *= (rangeHeight / picHeight);// 画像の幅＝画像縦の拡大率に合わせる
+                shape.IncrementLeft(rangeWidth / 2 - shape.Width / 2); //位置を横方向に異動する
+            }
+            else
+            {
+                //画像の方が横長比が大きい場合
+                shape.Width = rangeWidth;//画像の幅＝セルの幅
+                shape.Height *= (rangeWidth / picWidth);//画像の高さ＝画像横の拡大率に合わせる
+                shape.IncrementTop(rangeHeight / 2 - shape.Height / 2); //位置を縦方向に異動する
+            }
+
+            //上書き保存
+            wkbook.SaveAs(excelPath,
+                Excel.XlFileFormat.xlOpenXMLWorkbook, Type.Missing,
+                Type.Missing, Type.Missing, Type.Missing,
+                Excel.XlSaveAsAccessMode.xlNoChange, Type.Missing,
+                Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+
+            // ファイルを閉じる
+            wkbook.Close(false, Type.Missing, Type.Missing);
+            excelApp.Quit();
+        }
+
+    }
+}
