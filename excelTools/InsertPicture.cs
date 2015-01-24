@@ -6,7 +6,7 @@ namespace ExcelTools
     class ExcelTools
     {
         /// <summary>
-        /// 指定したexcelシートのrangeに指定した画像を縦横比を維持したまま中央かつ最大サイズで貼り付ける
+        /// excelシートの指定したセルに画像を縦横比を維持したまま中央かつ最大サイズで貼り付ける
         /// Insert Picture in Excel Automatically Sized to Fit Cells
         /// </summary>
         /// <param name="wkbook">excelワークブックオブジェクト</param>
