@@ -1,5 +1,4 @@
-﻿using System;
-using Excel = Microsoft.Office.Interop.Excel;
+﻿using Excel = Microsoft.Office.Interop.Excel;
 using Core = Microsoft.Office.Core;
 
 namespace ExcelTools
@@ -10,23 +9,14 @@ namespace ExcelTools
         /// 指定したexcelシートのrangeに指定した画像を縦横比を維持したまま中央かつ最大サイズで貼り付ける
         /// Insert Picture in Excel Automatically Sized to Fit Cells
         /// </summary>
-        /// <param name="excelPath">excelファイルのパス</param>
+        /// <param name="wkbook">excelワークブックオブジェクト</param>
         /// <param name="sheetName">シート名</param>
         /// <param name="topCell">貼り付ける場所（左上セル）</param>
         /// <param name="bottomCell">貼り付ける場所（右下セル）</param>
         /// <param name="picPath">画像ファイルのパス</param>
-        public static void InsertPicture(string excelPath, string sheetName, string topCell, string bottomCell, string picPath)
+        /// <returns>更新されたexcelワークブックオブジェクト</returns>
+        public static Excel.Workbook InsertPicture(Excel.Workbook wkbook, string sheetName, string topCell, string bottomCell, string picPath)
         {
-            var excelApp = new Excel.Application();
-
-            excelApp.Visible = true; //for debug 画面表示したくなければfalse。
-            excelApp.DisplayAlerts = false;
-
-            var wkbooks = excelApp.Workbooks;
-            var wkbook = (Excel.Workbook)wkbooks.Open(excelPath,
-                Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing,
-                Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
-
             var sheets = wkbook.Worksheets;
             var wksheet = (Excel.Worksheet)sheets[sheetName];
             var range = wksheet.get_Range(topCell, bottomCell);
@@ -47,8 +37,8 @@ namespace ExcelTools
             shape.ScaleWidth(1.0 /* 拡大比率 */, Core.MsoTriState.msoTrue); //一端、実サイズで展開
             shape.ScaleHeight(1.0 /* 拡大比率 */, Core.MsoTriState.msoTrue); //一端、実サイズで展開
 
-            var picWidth = shape.Width;//画像幅
-            var picHeight = shape.Height;//画像高
+            var picWidth = shape.Width;//画像の幅
+            var picHeight = shape.Height;//画像の高さ
             var picRatio = picWidth / picHeight; //画像の横長比
             var rangeRatio = rangeWidth / rangeHeight; //セルの横長比
 
@@ -56,28 +46,18 @@ namespace ExcelTools
             {
                 //セルの方が横長比が大きい場合 
                 shape.Height = rangeHeight;// 画像の高さ＝セルの高さ
-                shape.Width *= (rangeHeight / picHeight);// 画像の幅＝画像縦の拡大率に合わせる
-                shape.IncrementLeft(rangeWidth / 2 - shape.Width / 2); //位置を横方向に異動する
+                shape.Width *= (rangeHeight / picHeight);// 画像の幅＝画像の高さの拡大率に合わせる
+                shape.IncrementLeft(rangeWidth / 2 - shape.Width / 2); //横方向に移動する
             }
             else
             {
                 //画像の方が横長比が大きい場合
                 shape.Width = rangeWidth;//画像の幅＝セルの幅
-                shape.Height *= (rangeWidth / picWidth);//画像の高さ＝画像横の拡大率に合わせる
-                shape.IncrementTop(rangeHeight / 2 - shape.Height / 2); //位置を縦方向に異動する
+                shape.Height *= (rangeWidth / picWidth);//画像の高さ＝画像の幅の拡大率に合わせる
+                shape.IncrementTop(rangeHeight / 2 - shape.Height / 2); //縦方向に移動する
             }
 
-            //上書き保存
-            wkbook.SaveAs(excelPath,
-                Excel.XlFileFormat.xlOpenXMLWorkbook, Type.Missing,
-                Type.Missing, Type.Missing, Type.Missing,
-                Excel.XlSaveAsAccessMode.xlNoChange, Type.Missing,
-                Type.Missing, Type.Missing, Type.Missing, Type.Missing);
-
-            // ファイルを閉じる
-            wkbook.Close(false, Type.Missing, Type.Missing);
-            excelApp.Quit();
+            return wkbook;
         }
-
     }
 }
