@@ -19,6 +19,7 @@ namespace ExcelTools
         {
             var sheets = wkbook.Worksheets;
             var wksheet = (Excel.Worksheet)sheets[sheetName];
+            wksheet.Select();
             var range = wksheet.get_Range(topCell, bottomCell);
             range.Select();
 
