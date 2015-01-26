@@ -6,7 +6,7 @@ namespace ExcelTools
     class ExcelTools
     {
         /// <summary>
-        /// excelシートの指定したセルに画像を縦横比を維持したまま中央かつ最大サイズで貼り付ける
+        /// 指定したセルに画像を縦横比を維持したまま中央かつ最大サイズで貼り付ける
         /// Insert Picture in Excel Automatically Sized to Fit Cells
         /// </summary>
         /// <param name="wkbook">excelワークブックオブジェクト</param>
@@ -20,6 +20,9 @@ namespace ExcelTools
             var sheets = wkbook.Worksheets;
             var wksheet = (Excel.Worksheet)sheets[sheetName];
             wksheet.Select();
+
+            wksheet.Unprotect("azunyan"); //シート保護の解除
+
             var range = wksheet.get_Range(topCell, bottomCell);
             range.Select();
 
@@ -57,6 +60,8 @@ namespace ExcelTools
                 shape.Height *= (rangeWidth / picWidth);//画像の高さ＝画像の幅の拡大率に合わせる
                 shape.IncrementTop(rangeHeight / 2 - shape.Height / 2); //縦方向に移動する
             }
+
+            wksheet.Protect("azunyan"); //シート保護
 
             return wkbook;
         }

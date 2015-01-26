@@ -19,14 +19,14 @@ namespace ExcelTools
 
             //テストパターン                                                                        画像の形 セル<>画像サイズ  フィット方向（結果）
             //-----------------------------------------------------------------------------------   --------  -----------       ----------- 
-            wkbook = ExcelTools.InsertPicture(wkbook, "sheet3", "C2", "E6", @"c:\testData\a1.jpg");    //縦長    画像大             縦          
-            wkbook = ExcelTools.InsertPicture(wkbook, "sheet3", "G2", "H12", @"c:\testData\a1.jpg");   //縦長    画像大             横          
-            wkbook = ExcelTools.InsertPicture(wkbook, "sheet3", "C16", "E20", @"c:\testData\a2.jpg");  //横長    画像大             縦          
-            wkbook = ExcelTools.InsertPicture(wkbook, "sheet3", "G16", "H26", @"c:\testData\a2.jpg");  //横長    画像大             横          
-            wkbook = ExcelTools.InsertPicture(wkbook, "sheet3", "C29", "E33", @"c:\testData\a3.jpg");  //縦長    セル大             縦          
-            wkbook = ExcelTools.InsertPicture(wkbook, "sheet3", "G29", "H39", @"c:\testData\a3.jpg");  //縦長    セル大             横          
-            wkbook = ExcelTools.InsertPicture(wkbook, "sheet3", "C43", "E47", @"c:\testData\a4.jpg");  //横長    セル大             縦          
-            wkbook = ExcelTools.InsertPicture(wkbook, "sheet3", "G43", "H53", @"c:\testData\a4.jpg");  //横長    セル大             横          
+            wkbook = ExcelTools.InsertPicture(wkbook, "sheet2", "C2",  "E6",  @"c:\testData\a1.jpg");  //縦長    画像大             縦          
+            wkbook = ExcelTools.InsertPicture(wkbook, "sheet2", "G2",  "H12", @"c:\testData\a1.jpg");  //縦長    画像大             横          
+            wkbook = ExcelTools.InsertPicture(wkbook, "sheet2", "C16", "E20", @"c:\testData\a2.jpg");  //横長    画像大             縦          
+            wkbook = ExcelTools.InsertPicture(wkbook, "sheet2", "G16", "H26", @"c:\testData\a2.jpg");  //横長    画像大             横          
+            wkbook = ExcelTools.InsertPicture(wkbook, "sheet3", "C2",  "E6",  @"c:\testData\a3.jpg");  //縦長    セル大             縦          
+            wkbook = ExcelTools.InsertPicture(wkbook, "sheet3", "G2",  "H12", @"c:\testData\a3.jpg");  //縦長    セル大             横          
+            wkbook = ExcelTools.InsertPicture(wkbook, "sheet3", "C16", "E20", @"c:\testData\a4.jpg");  //横長    セル大             縦          
+            wkbook = ExcelTools.InsertPicture(wkbook, "sheet3", "G16", "H26", @"c:\testData\a4.jpg");  //横長    セル大             横          
 
             //結果保存
             wkbook.SaveAs(@"c:\testData\result.xlsx",
